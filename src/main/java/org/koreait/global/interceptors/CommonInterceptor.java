@@ -21,10 +21,12 @@ public class CommonInterceptor implements HandlerInterceptor {
         /* 사용자 구분 목적의 hash 생성 S */
         String userKey= "" + Objects.hash(key);
         String userHash = null;
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(userKey)) {
-                userHash = cookie.getValue();
-                break;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(userKey)) {
+                    userHash = cookie.getValue();
+                    break;
+                }
             }
         }
 
