@@ -89,7 +89,7 @@ public class EmailService {
     }
 
     public boolean sendEmail(RequestEmail form, String tpl) {
-        return sendEmail(form, tpl, null);
+        return sendEmail(form, tpl, form.getData());
     }
 
     public boolean sendEmail(String to, String subject, String content) {
