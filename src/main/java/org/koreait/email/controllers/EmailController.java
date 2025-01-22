@@ -5,6 +5,7 @@ import org.koreait.email.exceptions.AuthCodeIssueException;
 import org.koreait.email.services.EmailAuthService;
 import org.koreait.email.services.EmailService;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,10 +46,12 @@ public class EmailController {
      *
      * @param form
      */
-    @PostMapping
-    public void sendEmail(@RequestPart("file") List<MultipartFile> files, @ModelAttribute RequestEmail form) {
+    @PostMapping({"", "/tpl/{tpl}"})
+    public void sendEmail(@PathVariable(name="tpl", required = false) String tpl, @RequestPart(name="file", required = false) List<MultipartFile> files, @ModelAttribute RequestEmail form) {
         form.setFiles(files);
-
-        emailService.sendEmail(form, "general");
+        tpl = StringUtils.hasText(tpl) ? tpl : "general";
+        emailService.sendEmail(form, tpl);
     }
+
+
 }
