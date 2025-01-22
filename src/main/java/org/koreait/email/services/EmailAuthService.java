@@ -2,6 +2,8 @@ package org.koreait.email.services;
 
 import lombok.RequiredArgsConstructor;
 import org.koreait.email.controllers.RequestEmail;
+import org.koreait.email.exceptions.AuthCodeExpiredException;
+import org.koreait.email.exceptions.AuthCodeMismatchException;
 import org.koreait.global.exceptions.BadRequestException;
 import org.koreait.global.libs.Utils;
 import org.springframework.stereotype.Service;
@@ -36,8 +38,9 @@ public class EmailAuthService {
 
         LocalDateTime expired = LocalDateTime.now().plusMinutes(3L);
 
-        // 인증 코드 저장 필요
-
+        // 인증 코드 및 만료시간 저장 필요
+        utils.saveValue("authCode", authCode);
+        utils.saveValue("expiredTime", expired);
 
         Map<String, Object> tplData = new HashMap<>();
         tplData.put("authCode", authCode);
@@ -59,9 +62,8 @@ public class EmailAuthService {
             throw new BadRequestException(utils.getMessage("NotBlank.authCode"));
         }
 
-        /*
-        LocalDateTime expired = (LocalDateTime)session.getAttribute("expiredTime");
-        Integer authCode = (Integer)session.getAttribute("authCode");
+        LocalDateTime expired = utils.getValue("expiredTime");
+        Integer authCode = utils.getValue("authCode");
 
         if (expired != null && expired.isBefore(LocalDateTime.now())) { // 코드가 만료된 경우
             throw new AuthCodeExpiredException();
@@ -76,8 +78,6 @@ public class EmailAuthService {
         }
 
         // 인증 성공 상태 세션에 기록
-        session.setAttribute("authCodeVerified", true);
-
-         */
+        utils.saveValue("authCodeVerified", true);
     }
 }

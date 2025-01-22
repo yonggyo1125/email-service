@@ -3,13 +3,18 @@ package org.koreait.email.controllers;
 import lombok.RequiredArgsConstructor;
 import org.koreait.email.exceptions.AuthCodeIssueException;
 import org.koreait.email.services.EmailAuthService;
+import org.koreait.email.services.EmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class EmailController {
     private final EmailAuthService authService;
+    private final EmailService emailService;
 
     /**
      * 인증코드 발급
@@ -33,5 +38,17 @@ public class EmailController {
     @GetMapping("/verify")
     public void verify(@RequestParam(name="authCode", required = false) Integer authCode) {
         authService.verify(authCode);
+    }
+
+    /**
+     * 메일 전송하기
+     *
+     * @param form
+     */
+    @PostMapping
+    public void sendEmail(@RequestPart("file") List<MultipartFile> files, @ModelAttribute RequestEmail form) {
+        form.setFiles(files);
+
+        emailService.sendEmail(form, "general");
     }
 }
