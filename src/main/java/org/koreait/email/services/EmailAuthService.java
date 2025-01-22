@@ -39,8 +39,8 @@ public class EmailAuthService {
         LocalDateTime expired = LocalDateTime.now().plusMinutes(3L);
 
         // 인증 코드 및 만료시간 저장 필요
-        utils.saveValue("authCode", authCode);
-        utils.saveValue("expiredTime", expired);
+        utils.saveValue(utils.getUserHash() + "_authCode", authCode);
+        utils.saveValue(utils.getUserHash() + "_expiredTime", expired);
 
         Map<String, Object> tplData = new HashMap<>();
         tplData.put("authCode", authCode);
@@ -62,8 +62,8 @@ public class EmailAuthService {
             throw new BadRequestException(utils.getMessage("NotBlank.authCode"));
         }
 
-        LocalDateTime expired = utils.getValue("expiredTime");
-        Integer authCode = utils.getValue("authCode");
+        LocalDateTime expired = utils.getValue(utils.getUserHash() + "_expiredTime");
+        Integer authCode = utils.getValue(utils.getUserHash() + "_authCode");
 
         if (expired != null && expired.isBefore(LocalDateTime.now())) { // 코드가 만료된 경우
             throw new AuthCodeExpiredException();
@@ -78,6 +78,6 @@ public class EmailAuthService {
         }
 
         // 인증 성공 상태 세션에 기록
-        utils.saveValue("authCodeVerified", true);
+        utils.saveValue(utils.getUserHash() + "_authCodeVerified", true);
     }
 }
