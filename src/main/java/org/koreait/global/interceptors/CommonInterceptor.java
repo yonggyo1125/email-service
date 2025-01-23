@@ -32,7 +32,7 @@ public class CommonInterceptor implements HandlerInterceptor {
 
         userHash = StringUtils.hasText(userHash) ? userHash : UUID.randomUUID().toString();
 
-        response.setHeader("Set-Cookie", String.format("%s=%s; Path=/; HttpOnly; SameSite=None", userKey, userHash));
+        response.setHeader("Set-Cookie", String.format("%s=%s; Path=/; HttpOnly; SameSite=None; Secure", userKey, userHash));
         /* 사용자 구분 목적의 hash 생성 E */
 
         return true;
